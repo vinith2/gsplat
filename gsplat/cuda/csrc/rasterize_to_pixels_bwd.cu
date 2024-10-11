@@ -206,8 +206,9 @@ __global__ void rasterize_to_pixels_bwd_kernel(
                         (rgbs_batch[t * COLOR_DIM + k] * T - buffer[k] * ra) *
                         v_render_c[k];
                 }
-
-                v_alpha += T_final * ra * v_render_a;
+ 
+                v_alpha = v_render_a;
+                // v_alpha += T_final * ra * v_render_a;
                 // contribution from background pixel
                 if (backgrounds != nullptr) {
                     S accum = 0.f;
