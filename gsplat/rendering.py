@@ -336,7 +336,7 @@ def rasterization(
     if compensations is not None:
         opacities = opacities * compensations
     if radon_correction:
-        cov3D_det = scales[:,0]*scales[:,1]*scales[:,2]
+        cov3D_det = (scales[:,0]*scales[:,1]*scales[:,2])**2
         cov2D_det = conics[:,:,0]*conics[:,:,2] - conics[:,:,1]**2
         opacities = opacities*torch.sqrt(2*torch.pi/(cov2D_det*cov3D_det[None]))
 
