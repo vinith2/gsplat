@@ -173,10 +173,11 @@ __global__ void rasterize_to_pixels_bwd_kernel(
                                   conic.z * delta.y * delta.y) +
                           conic.y * delta.x * delta.y;
                 vis = __expf(-sigma);
-                alpha = min(0.999f, opac * vis);
+                alpha =  opac * vis;
+                /*alpha = min(0.999f, opac * vis);
                 if (sigma < 0.f || alpha < 1.f / 255.f) {
                     valid = false;
-                }
+                }*/
             }
 
             // if all threads are inactive in this warp, skip this loop
@@ -218,8 +219,8 @@ __global__ void rasterize_to_pixels_bwd_kernel(
                     }
                     v_alpha += -T_final * ra * accum;
                 }
-
-                if (opac * vis <= 0.999f) {
+                if(true){
+                //if (opac * vis <= 0.999f) {
                     const S v_sigma = -opac * vis * v_alpha;
                     v_conic_local = {
                         0.5f * v_sigma * delta.x * delta.x,

@@ -143,16 +143,17 @@ __global__ void rasterize_to_pixels_fwd_kernel(
             const S sigma = 0.5f * (conic.x * delta.x * delta.x +
                                     conic.z * delta.y * delta.y) +
                             conic.y * delta.x * delta.y;
-            S alpha = min(0.999f, opac * __expf(-sigma));
+            S alpha =  opac * __expf(-sigma);
+            /*S alpha = min(0.999f, opac * __expf(-sigma));
             if (sigma < 0.f || alpha < 1.f / 255.f) {
                 continue;
-            }
+            }*/
 
             const S next_T = T - alpha; //T * (1.0f - alpha);
-            if (next_T <= 1e-4) { // this pixel is done: exclusive
+            /*if (next_T <= 1e-4) { // this pixel is done: exclusive
                 done = true;
                 break;
-            }
+            }`*/
 
             int32_t g = id_batch[t];
             const S vis = alpha; // * T;
