@@ -47,6 +47,7 @@ def rasterization(
     sparse_grad: bool = False,
     absgrad: bool = False,
     rasterize_mode: Literal["classic", "antialiased"] = "classic",
+    radon_correction: bool = False,
     channel_chunk: int = 32,
     distributed: bool = False,
     camera_model: Literal["pinhole", "ortho", "fisheye"] = "pinhole",
@@ -171,6 +172,7 @@ def rasterization(
             `meta["means2d"].absgrad`. Default is False.
         rasterize_mode: The rasterization mode. Supported modes are "classic" and
             "antialiased". Default is "classic".
+        radon_correction: View dependendet opacity correction so the volume density is asccurate
         channel_chunk: The number of channels to render in one go. Default is 32.
             If the required rendering channels are larger than this value, the rendering
             will be done looply in chunks.
@@ -333,6 +335,10 @@ def rasterization(
 
     if compensations is not None:
         opacities = opacities * compensations
+    if radon_correction:
+        cov3D_det = scales[:,0]*scales[:,1]*scales[:,2]
+        cov2D_det = conics[:,:,0]*conics[:,:,2] - conics[:,:,1]**2
+        opacities = opacities*torch.sqrt(2*torch.pi/(cov2D_det*cov3D_det[None]))
 
     meta.update(
         {
